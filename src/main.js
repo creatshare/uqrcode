@@ -1,5 +1,6 @@
 var config = {};
 
+
 var menuId = {
 	'image': 0,
 	'text': 0,
