@@ -1,0 +1,32 @@
+{
+	"name": "全能二维码",
+	"version": "1.6.0",
+	"manifest_version": 2,
+	"background": {
+		"page": "main.html",
+		"script": [ "jquery-2.0.0.min.js", "main.js" ]
+	},
+	"description": "文字、网址、图片……你能想得到的，扫一下，统统进手机。",
+	"permissions": [
+		"contextMenus",
+		"http://dwz.cn/",
+		"http://qr.liantu.com/",
+		"tabs"
+	],
+	"icons": {
+		"16": "icon-16.png",
+		"48": "icon-48.png",
+		"128": "icon-128.png"
+	},
+	"browser_action": {
+		"default_icon": "icon.png",
+		"default_title": "全能二维码\n By: CreatShare 团队"
+	},
+	"content_scripts": [ {
+		"matches": ["*://*/*"],
+		"css": ["content.css"],
+		"js": ["jquery-2.0.0.min.js", "content.js"]
+	}],
+	"options_page": "options/index.html",
+	"web_accessible_resources": ["images/loading.gif"]
+}
