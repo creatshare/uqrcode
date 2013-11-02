@@ -1,73 +1,86 @@
-#extqrcode {
-	display:none;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: rgba(0, 0, 0, .4);
-	z-index:99999999;
+#uqrcode {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .4);
+    z-index:99999999;
 }
-#extqrcode .qrcodecontent {
-	position: absolute;
-	width: 200px;
-	height: 230px;
-	padding: 10px 10px 5px 10px;
-	left: 50%;
-	top: 50%;
-	margin-left: -120px;
-	margin-top: -135px;
-	background: #FFF;
-	border-radius:5px;
+
+#uqrcode .uqrcode-border {
+    position: absolute;
+    width: 230px;
+    height: 260px;
+    left: 50%;
+    top: 50%;
+    margin-left: -115px;
+    margin-top: -130px;
+    background: rgba(0, 0, 0, .5);
+    border-radius:4px;
 }
-#extqrcode .qrcodeclose {
-	position: absolute;
-	width: 18px;
-	height: 18px;
-	padding: 0;
-	right: -9px;
-	top: -9px;
-	margin: 0;
-	background: #FFF;
-	border:2px solid #FFF;
-	border-radius: 100%;
-	line-height: 18px;
-	text-align:center;
-	color: #333;
-	font-size: 16px;
-	cursor: pointer;
+#uqrcode .uqrcode-content {
+    width: 200px;
+    height: 230px;
+    padding: 10px;
+    margin: 5px;
+    background: #FFF;
+    border-radius:2px;
 }
-#extqrcode .qrcodeclose:hover {
-	color: #FFF;
-	background:#FF4500;
+#uqrcode .uqrcode-close {
+    display: none;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    right: -10px;
+    top: -10px;
+    margin: 0;
+    background: #FFF;
+    border:2px solid #FFF;
+    border-radius: 100%;
+    line-height: 28px;
+    text-align:center;
+    color: #333;
+    font-size: 32px;
+    font-family: 'Times New Roman' serif;
+    cursor: pointer;
 }
-#extqrcode p.qrcodetext {
-	height:20px;
-	font-size: 13px;
-	color: #333;
-	line-height: 20px;
-	margin: 0;
-	text-align:center;
-	overflow: hidden;
+#uqrcode .uqrcode-border:hover .uqrcode-close {
+    display: block;
 }
-#extqrcode p.qrcodetext .qrcodedots {
-	font-family: 'YaHei Consolas Hybrid',Consolas,'Courier New',Courier,monospace;
+#uqrcode .uqrcode-close:hover {
+    color: #FFF;
+    background:#FF4500;
 }
-#extqrcode p.qrcodetext .error {
-	color: red;
+#uqrcode p.uqrcode-text {
+    height:30px;
+    font-size: 13px;
+    color: #333;
+    line-height: 30px;
+    margin: 0;
+    text-align:center;
+    overflow: hidden;
 }
-#extqrcode div.qrcodeimg {
-	display: none;
-	border: 0;
-	padding: 0;
-	width:200px;
-	height:200px;
-	margin: 0;
+#uqrcode p.uqrcode-text .uqrcode-dots {
+    font-family: 'YaHei Consolas Hybrid',Consolas,'Courier New',Courier,monospace;
 }
-#extqrcode div.qrcodeloading {
-	border: 0;
-	padding: 0;
-	width:30px;
-	height:30px;
-	margin: 85px;
+#uqrcode p.uqrcode-text .error {
+    color: red;
+}
+#uqrcode div.uqrcode-img {
+    display: none;
+    border: 0;
+    padding: 0;
+    width:200px;
+    height:200px;
+    margin: 0;
+}
+#uqrcode div.uqrcode-loading {
+    display: block;
+    border: 0;
+    padding: 0;
+    width:30px;
+    height:30px;
+    margin: 85px;
 }

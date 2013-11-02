@@ -13,9 +13,9 @@ var initContentMenus = function() {
 		title: "转化\"%s\"为二维码",
 		contexts: ['selection'],
 		onclick: function( info, tab ) {
-			console.log("showpage ");
+			// console.log("showpage ");
 			chrome.tabs.sendMessage( tab.id, { 'type': 'showpage' } );
-			config = JSON.parse( localStorage['tinyQrcode'] );
+			config = JSON.parse( localStorage['Uqrcode'] );
 			creatData( { "type": 'text', "url": tab.url, "text": info.selectionText }, function( data ) {
 				chrome.tabs.sendMessage( tab.id, { 'type': 'setdata', 'data': data } );
 			});
@@ -27,7 +27,7 @@ var initContentMenus = function() {
 		contexts: ['image'],
 		onclick: function( info, tab ) {
 			chrome.tabs.sendMessage( tab.id, { 'type': 'showpage' } );
-			config = JSON.parse( localStorage['tinyQrcode'] );
+			config = JSON.parse( localStorage['Uqrcode'] );
 			creatData( { "type": 'image', "url": info.srcUrl, "title": info.srcUrl }, function( data ) {
 				chrome.tabs.sendMessage( tab.id, { 'type': 'setdata', 'data': data } );
 			});
@@ -40,7 +40,7 @@ var initContentMenus = function() {
 		contexts: ['link'],
 		onclick: function( info, tab ) {
 			chrome.tabs.sendMessage( tab.id, { 'type': 'showpage' } );
-			config = JSON.parse( localStorage['tinyQrcode'] );
+			config = JSON.parse( localStorage['Uqrcode'] );
 			creatData( { "type": 'link', "url": info.linkUrl, "title": info.linkUrl }, function( data ) {
 				chrome.tabs.sendMessage( tab.id, { 'type': 'setdata', 'data': data } );
 			});
@@ -55,7 +55,7 @@ var initContentMenus = function() {
 	if( !menuId.link ) {
 		menuId.link = chrome.contextMenus.create( createLinkInfo );
 	}
-	console.log( menuId );
+	// console.log( menuId );
 }
 
 // 初始化插件
@@ -71,10 +71,10 @@ var initExt = function() {
 			type: 'liantu' // 二维码接口
 		}
 	}
-	if( !localStorage['tinyQrcode'] ) {
-		localStorage['tinyQrcode'] = JSON.stringify( defaultConfig );
+	if( !localStorage['Uqrcode'] ) {
+		localStorage['Uqrcode'] = JSON.stringify( defaultConfig );
 	}
-	config = localStorage['tinyQrcode'];
+	config = JSON.parse( localStorage['Uqrcode'] );
 	if( config.showType == 'page' ) {
 		chrome.browserAction.setPopup({'popup':''});
 	} else if( config.showType == 'popup' ) {
@@ -84,7 +84,7 @@ var initExt = function() {
 	initContentMenus();
 	chrome.browserAction.onClicked.addListener( function( tab ) {
 		chrome.tabs.sendMessage( tab.id, { 'type': 'showpage' } );
-		config = JSON.parse( localStorage['tinyQrcode'] );
+		config = JSON.parse( localStorage['Uqrcode'] );
 		creatData( { "type": 'url', "url": tab.url, "title": tab.title }, function( data ) {
 			chrome.tabs.sendMessage( tab.id, { 'type': 'setdata', 'data': data } );
 		});
@@ -193,7 +193,7 @@ var cleckUrl = function( url ) {
 
 // 转换为数据
 var creatData = function( val, callback ) {
-	console.log( "Data =====", val );
+	// console.log( "Data =====", val );
 	var data = {};
 	if( cleckUrl(val.url) ) {
 		if( val.type == "text" ) {
@@ -218,10 +218,6 @@ var creatData = function( val, callback ) {
 			}
 		} else if( val.type == "image" ) {
 			data.type = "image";
-			/* var textArr = val.title.split('/');
-			data.text = decodeURI( textArr[textArr.length - 1] );
-			data.text = decodeURI( textArr[textArr.length - 1] );
-			*/
 			data.text = '扫一下，图片瞬间到手机！';
 			data.title = val.url;
 			if( config.tinyUrl.enabled ) {
@@ -235,10 +231,6 @@ var creatData = function( val, callback ) {
 			}
 		} else if( val.type == "link" ) {
 			data.type = "link";
-			/* var textArr = val.title.split('/');
-			data.text = decodeURI( textArr[textArr.length - 1] );
-			data.text = decodeURI( textArr[textArr.length - 1] );
-			*/
 			data.text = '扫一下，链接瞬间到手机！';
 			data.title = val.url;
 			if( config.tinyUrl.enabled ) {
@@ -258,7 +250,7 @@ var creatData = function( val, callback ) {
 			'imgUrl': chrome.extension.getURL('images/error.png'),
 			'title': ''
 		}
-		console.log("Page Error", data );
+		// console.log("Page Error", data );
 		callback( data );
 	}
 }

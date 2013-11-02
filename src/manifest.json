@@ -1,6 +1,6 @@
 {
 	"name": "全能二维码",
-	"version": "1.6.1",
+	"version": "1.6.2",
 	"manifest_version": 2,
 	"background": {
 		"page": "main.html",

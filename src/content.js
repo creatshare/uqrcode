@@ -1,61 +1,69 @@
-var loadImg = chrome.extension.getURL('images/loading.gif');
-var html = '<div id="extqrcode"><div class="qrcodecontent"><span class="qrcodeclose">×</span><p class="qrcodetext">正在努力加载中<span class="qrcodedots">...</span></p><div class="qrcodeimg"><img src="###" width="200" height="200"/></div><div class="qrcodeloading"><img src="###" width="30" height="30"/></div></div></div>';
-$('body').append( html );
-$('#extqrcode .qrcodeloading img').attr('src', loadImg);
+(function(){
+    var loadImg = chrome.extension.getURL('images/loading.gif'),
+    dom = '<div id="uqrcode" style="display:none"><div class="uqrcode-border"><span class="uqrcode-close">&times;</span><div class="uqrcode-content"><p class="uqrcode-text">正在玩命加载中<span class="uqrcode-dots">...</span></p><div class="uqrcode-img"><img src="###" width="200" height="200"/></div><div class="uqrcode-loading"><img src="' + loadImg + '" width="30" height="30"/></div></div></div></div>',
+    
+    // 加载动画...
+    loading = function() {
+        var api = {
+            i: 0,
+            text : ['&nbsp;&nbsp;&nbsp;', '.&nbsp;&nbsp;', '..&nbsp;', '...'],
+            timer : setInterval( function() {
+                if ( api.i == api.text.length ) {
+                    api.i = 0;
+                } else {
+                    api.i++;
+                }
+                $('#uqrcode p.uqrcode-text .uqrcode-dots').html( api.text[api.i] );
+            }, 400)
+        };
+        
+        return api;
+    },
 
-var loading = {
-	i: 0,
-	text : ['&nbsp;&nbsp;&nbsp;', '.&nbsp;&nbsp;', '..&nbsp;', '...'],
-	timer : setInterval( function() {
-		if ( loading.i == loading.text.length ) {
-			loading.i = 0;
-		} else {
-			loading.i++;
-		}
-		$('#extqrcode p.qrcodetext .qrcodedots').html( loading.text[loading.i] );
-	}, 200)
-}
+    showQrcode = function() {
+        chrome.extension.sendMessage( { 'type': 'hideContextMenus' } );
+        loading();
+        $('body').append( dom );
+        $('#uqrcode').fadeIn(100);
+        
+        $("#uqrcode .uqrcode-close").on("click", function() {
+            hideQrcode();
+        });
+        $("#uqrcode").on("click", function( e ) {
+            // console.log( "close ");
+            if( e.target == this ) {
+                hideQrcode();
+            }
+        });
+    },
+    
+    setValue = function( data ) {
+        var qrcode = new Image();
+        qrcode.src = data.imgUrl;
+        qrcode.onload = function() {
+            clearInterval( loading.timer );
+            $('#uqrcode .uqrcode-img').show();
+            $('#uqrcode .uqrcode-loading').hide();
+        }
+        $('#uqrcode .uqrcode-content').attr('title', data.title );
+        $('#uqrcode .uqrcode-text').html( data.text );
+        $('#uqrcode .uqrcode-img img').attr( 'src', data.imgUrl );
+    },
 
-var setValue = function( data ) {
-	var qrcode = new Image();
-	qrcode.src = data.imgUrl;
-	qrcode.onload = function() {
-		clearInterval( loading.timer );
-		$('#extqrcode .qrcodeimg').show();
-		$('#extqrcode .qrcodeloading').hide();
-	}
-	if( !data.text.match( /^<span/ ) ) {
-		data.text = data.text.substr(0, 20);
-	}
-	$('#extqrcode .qrcodetext').attr('title', data.title ).html( data.text );
-	$('#extqrcode .qrcodeimg img').attr( 'src', data.imgUrl );
-}
+    hideQrcode = function() {
+        // console.log('hide');
+        chrome.extension.sendMessage( { 'type': 'showContextMenus' } );
+        $('#uqrcode').fadeOut(100, function() {
+            $('#uqrcode').remove();
+        });
+    };
 
-var hideQrcode = function() {
-	chrome.extension.sendMessage( { 'type': 'showContextMenus' } );
-	$('#extqrcode').fadeOut(100, function(){
-		$('#extqrcode .qrcodeimg').hide();
-		$('#extqrcode .qrcodeloading').show();
-	});
-}
-
-chrome.extension.onMessage.addListener( function(request, sender, sendResponse ) {
-	console.log(request);
-	if( request.type == 'showpage' ) {
-		chrome.extension.sendMessage( { 'type': 'hideContextMenus' } );
-		$('#extqrcode .qrcodeimg').hide();
-		$('#extqrcode .qrcodeloading').show();
-		$('#extqrcode').fadeIn(60);
-	} else if( request.type == 'setdata' ) {
-		setValue( request.data );
-	}
-});
-
-$("#extqrcode .qrcodeclose").on("click", function() {
-	hideQrcode();
-});
-$("#extqrcode").on("click", function( e ){
-	if( e.target == this ) {
-		hideQrcode();
-	}
-});
+    chrome.extension.onMessage.addListener( function(request, sender, sendResponse ) {
+        // console.log(request);
+        if( request.type == 'showpage' ) {
+            showQrcode();
+        } else if( request.type == 'setdata' ) {
+            setValue( request.data );
+        }
+    });
+})();
