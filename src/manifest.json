@@ -1,16 +1,15 @@
 {
 	"name": "全能二维码",
-	"version": "1.6.2",
+	"version": "2.0.0",
 	"manifest_version": 2,
 	"background": {
 		"page": "main.html",
-		"script": [ "jquery-2.0.0.min.js", "main.js" ]
+		"script": [ "libs/jquery-2.0.0.min.js", "main.js" ]
 	},
 	"description": "文字、网址、图片……你能想得到的，扫一下，统统进手机。",
 	"permissions": [
 		"contextMenus",
 		"http://dwz.cn/",
-		"http://qr.liantu.com/",
 		"tabs"
 	],
 	"icons": {
@@ -25,8 +24,7 @@
 	"content_scripts": [ {
 		"matches": ["*://*/*"],
 		"css": ["content.css"],
-		"js": ["jquery-2.0.0.min.js", "content.js"]
+		"js": ["content.js"]
 	}],
-	"options_page": "options/index.html",
-	"web_accessible_resources": ["images/loading.gif"]
+	"options_page": "options/index.html"
 }
