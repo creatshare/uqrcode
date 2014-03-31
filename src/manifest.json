@@ -24,7 +24,7 @@
 	"content_scripts": [ {
 		"matches": ["*://*/*"],
 		"css": ["content.css"],
-		"js": ["content.js"]
+		"js": ["libs/jquery-2.0.0.min.js", "content.js"]
 	}],
 	"options_page": "options/index.html"
 }
