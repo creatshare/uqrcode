@@ -1,5 +1,5 @@
 /* global chrome */
-var menuId = {'image': 0, 'text': 0, 'link': 0},
+var menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0},
 
     // 检查网址是否合法
     cleckUrl = function (url) {
@@ -27,13 +27,32 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
             data.size = (canvas.width + canvas.height) / 2;
 
             if (!cleckUrl(argu.url)) {
-                data.type = 'error';
-                data.text = '<span class="error">错误：不是有效的网址</span>';
+                data.type = 'info';
+                data.title = '<span class="error">错误：不是有效的网址</span>';
             }
 
-            console.log(data);
             callback(data);
         }, 20);
+    },
+
+    // 二维码解码
+    deQrcode = function (argu, callback) {
+        var data = {},
+            qrcanvas = $('<canvas>'),
+            img = new Image(),
+            ctx = qrcanvas[0].getContext('2d');
+
+        img.src = argu.src;
+        img.onload = function() {
+            qrcanvas[0].width = img.width;
+            qrcanvas[0].height = img.height;
+            ctx.drawImage(img, 0, 0);
+            data.type = 'info';
+            data.title = "二维码解码结果"
+            data.qrcode = chrome.extension.getURL("images/qr.png");
+            data.text = qrcanvas.qrdecode();
+            callback(data);
+        };
     },
 
     // 注册右键菜单
@@ -45,7 +64,7 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
                 onclick: function (info, tab) {
                     // console.log("showpage ");
                     creatQrcode({"type": 'text', "url": tab.url, "text": info.selectionText}, function (data) {
-                        chrome.tabs.sendMessage(tab.id, {'type': 'qrencode', 'data': data});
+                        chrome.tabs.sendMessage(tab.id, data);
                     });
                 }
             },
@@ -56,7 +75,7 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
                 contexts: ['image'],
                 onclick: function (info, tab) {
                     creatQrcode({ "type": 'image', "url": tab.url, "text": info.srcUrl}, function (data) {
-                        chrome.tabs.sendMessage(tab.id, {'type': 'qrencode', 'data': data});
+                        chrome.tabs.sendMessage(tab.id, data);
                     });
                 }
             },
@@ -67,7 +86,18 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
                 contexts: ['link'],
                 onclick: function (info, tab) {
                     creatQrcode({ "type": 'link', "url": tab.url, "text": info.linkUrl}, function (data) {
-                        chrome.tabs.sendMessage(tab.id, {'type': 'qrencode', 'data': data});
+                        chrome.tabs.sendMessage(tab.id, data);
+                    });
+                }
+            },
+
+            createQrcodeInfo = {
+                type: 'normal',
+                title: "转化二维码为文字",
+                contexts: ['image'],
+                onclick: function (info, tab) {
+                    deQrcode({"src": info.srcUrl}, function (data) {
+                        chrome.tabs.sendMessage(tab.id, data);
                     });
                 }
             };
@@ -81,13 +111,16 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
         if (!menuId.link) {
             menuId.link = chrome.contextMenus.create(createLinkInfo);
         }
+        if (!menuId.qrcode) {
+            menuId.qrcode = chrome.contextMenus.create(createQrcodeInfo);
+        }
         // console.log( menuId );
     },
 
     // 移除右键菜单
     destoryContentMenu = function () {
         chrome.contextMenus.removeAll(function () {
-            menuId = {'image': 0, 'text': 0, 'link': 0};
+            menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0};
         });
     },
 
@@ -103,7 +136,7 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
         // 监听二维码事件
         chrome.browserAction.onClicked.addListener(function (tab) {
             creatQrcode({"type": 'url', "url": tab.url, "text": tab.url}, function (data) {
-                chrome.tabs.sendMessage(tab.id, {'type': 'qrencode', 'data': data});
+                chrome.tabs.sendMessage(tab.id, data);
             });
         });
 

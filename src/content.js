@@ -6,7 +6,8 @@
             chrome.extension.sendMessage({ 'type': 'hideContextMenus' });
             var $qrcode = $(qrdom);
             if (data.type === 'info') {
-                $qrcode.find('.uqrcode-tips').html(data.text);
+                $qrcode.find('.uqrcode-tips').html(data.title);
+                $qrcode.find('.uqrcode-text p').html(data.text);
                 $qrcode.find('img').attr('src', data.qrcode);
                 $qrcode.find('.uqrcode-content').addClass('uqrcode-info');
             } else {
@@ -48,9 +49,7 @@
         };
 
     chrome.extension.onMessage.addListener(function (request) {
-        // console.log(request);
-        if (request.type === 'qrencode') {
-            showQrcode(request.data);
-        }
+        console.log(request);
+        showQrcode(request);
     });
 })();

@@ -79,4 +79,6 @@
     font-size: 14px;
     line-height: 28px;
     min-height: 160px;
+    text-align: left;
+    word-break: break-all;
 }

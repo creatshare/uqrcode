@@ -9,7 +9,7 @@
 	"description": "文字、网址、图片……你能想得到的，扫一下，统统进手机。",
 	"permissions": [
 		"contextMenus",
-		"http://dwz.cn/",
+		"*://*/*",
 		"tabs"
 	],
 	"icons": {
@@ -26,5 +26,6 @@
 		"css": ["content.css"],
 		"js": ["libs/jquery-2.0.0.min.js", "content.js"]
 	}],
-	"options_page": "options/index.html"
+	"options_page": "options/index.html",
+	"web_accessible_resources": ["images/qr.png"]
 }
