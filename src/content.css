@@ -6,72 +6,77 @@
     right: 0;
     background: rgba(0, 0, 0, .4);
     z-index:99999999;
+    font-family: '微软雅黑';
 }
 
 #uqrcode .uqrcode-border {
     position: absolute;
-    width: 230px;
-    height: 260px;
+    width: 240px;
+    height: 240px;
     left: 50%;
     top: 50%;
-    margin-left: -115px;
-    margin-top: -130px;
+    margin-left: -120px;
+    margin-top: -120px;
     background: rgba(0, 0, 0, .5);
     border-radius:4px;
 }
 #uqrcode .uqrcode-content {
-    width: 200px;
-    height: 230px;
-    padding: 10px;
-    margin: 5px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
     background: #FFF;
     border-radius:2px;
-}
-#uqrcode .uqrcode-close {
-    display: none;
-    position: absolute;
-    width: 26px;
-    height: 26px;
-    padding: 0;
-    right: -10px;
-    top: -10px;
-    margin: 0;
-    background: #FFF;
-    border:2px solid #FFF;
-    border-radius: 100%;
-    line-height: 28px;
-    text-align:center;
-    color: #333;
-    font-size: 32px;
-    font-family: 'Times New Roman' serif;
-    cursor: pointer;
-}
-#uqrcode .uqrcode-border:hover .uqrcode-close {
-    display: block;
-}
-#uqrcode .uqrcode-close:hover {
-    color: #FFF;
-    background:#FF4500;
-}
-#uqrcode p.uqrcode-text {
-    height:30px;
-    font-size: 13px;
-    color: #333;
-    line-height: 30px;
-    margin: 0;
-    text-align:center;
     overflow: hidden;
 }
-#uqrcode p.uqrcode-text .uqrcode-dots {
-    font-family: 'YaHei Consolas Hybrid',Consolas,'Courier New',Courier,monospace;
+#uqrcode .uqrcode-content .uqrcode-qrcode {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #FFF;
 }
-#uqrcode p.uqrcode-text .error {
-    color: red;
+#uqrcode .uqrcode-content.uqrcode-success:hover .uqrcode-qrcode {
+    -webkit-filter: blur(3px);
 }
-#uqrcode div.uqrcode-img {
-    border: 0;
-    padding: 0;
-    width:200px;
-    height:200px;
-    margin: 0;
+#uqrcode .uqrcode-content .uqrcode-qrcode img {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFF;
+}
+#uqrcode .uqrcode-content .uqrcode-text {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(200, 200, 200, .4);
+    -webkit-transition: all .3s;
+}
+
+#uqrcode .uqrcode-content:hover .uqrcode-text, #uqrcode .uqrcode-content.uqrcode-info .uqrcode-text {
+    z-index: 3;
+    top: 0;
+}
+#uqrcode .uqrcode-content .uqrcode-text .uqrcode-tips {
+    margin: 20px 0;
+    line-height: 30px;
+    text-align: center;
+    color: #F33;
+    font-size: 14px;
+}
+#uqrcode .uqrcode-content .uqrcode-text p {
+    color: #222;
+    padding: 20px;
+    border-top: 1px dashed #AAA;
+    background-color: rgba(255, 255, 255, .8);
+    font-size: 14px;
+    line-height: 28px;
+    min-height: 160px;
 }

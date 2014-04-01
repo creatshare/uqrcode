@@ -15,13 +15,6 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
     creatQrcode = function (argu, callback) {
         // console.log( "Data =====", val );
         var data = {},
-            titleList = {
-                'text' : '扫一下，文字瞬间到手机！',
-                'url'  : '扫一下，网址瞬间到手机！',
-                'image': '扫一下，图片瞬间到手机！',
-                'link' : '扫一下，链接瞬间到手机！',
-                'error': '错误：不是有效的网址'
-            },
             qrcanvas = $('<div>');
 
         data.type = argu.type;
@@ -29,15 +22,15 @@ var menuId = {'image': 0, 'text': 0, 'link': 0},
 
         qrcanvas.qrcode({text: data.text});
         setTimeout(function () {
-            data.qrcode = qrcanvas.find('canvas')[0].toDataURL("image/png");
+            var canvas = qrcanvas.find('canvas')[0];
+            data.qrcode = canvas.toDataURL("image/png");
+            data.size = (canvas.width + canvas.height) / 2;
 
             if (!cleckUrl(argu.url)) {
                 data.type = 'error';
                 data.text = '<span class="error">错误：不是有效的网址</span>';
-                data.qrcode = undefined;
             }
 
-            data.title = titleList[data.type];
             console.log(data);
             callback(data);
         }, 20);

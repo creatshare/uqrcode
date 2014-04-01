@@ -1,12 +1,32 @@
 /* global chrome */
 (function () {
-    var dom = '<div id="uqrcode" style="display:none"><div class="uqrcode-border"><span class="uqrcode-close">&times;</span><div class="uqrcode-content"><div class="uqrcode-img"><img></div></div></div></div>',
+    var qrdom = '<div id="uqrcode" style="display:none"><div class="uqrcode-border"><div class="uqrcode-content"><div class="uqrcode-qrcode"><img/></div><div class="uqrcode-text"><div class="uqrcode-tips">请拿开鼠标再使用手机扫描</div><p></p></div></div></div></div>',
 
         showQrcode = function (data) {
             chrome.extension.sendMessage({ 'type': 'hideContextMenus' });
-            $('body').append(dom);
+            var $qrcode = $(qrdom);
+            if (data.type === 'info') {
+                $qrcode.find('.uqrcode-tips').html(data.text);
+                $qrcode.find('img').attr('src', data.qrcode);
+                $qrcode.find('.uqrcode-content').addClass('uqrcode-info');
+            } else {
+                $qrcode.find('.uqrcode-content').addClass('uqrcode-success');
+                data.size = data.size || 230;
+                if (data.size > 400) {
+                    data.size = data.size / 5 * 3;
+                } else if (data.size > 300) {
+                    data.size = data.size / 5 * 4;
+                }
+                console.log(data.size);
+
+                if (data.size > 230) {
+                    $qrcode.find('.uqrcode-border').css({width: data.size + 10, height: data.size + 10, marginLeft: -0.5 * (data.size + 10), marginTop: -0.5 * (data.size + 10)}); // padding 5；
+                }
+                $qrcode.find('img').attr('src', data.qrcode).css({width: data.size, height: data.size});
+                $qrcode.find('.uqrcode-text p').html(data.text);
+            }
+            $('body').append($qrcode);
             $('#uqrcode').fadeIn(100);
-            setValue(data);
 
             $("#uqrcode .uqrcode-close").on("click", function () {
                 hideQrcode();
@@ -20,14 +40,7 @@
             });
         },
 
-        setValue = function (data) {
-            $('#uqrcode .uqrcode-content').attr('title', data.title);
-            $('#uqrcode .uqrcode-text').html(data.text);
-            $('#uqrcode .uqrcode-img img').attr('src', data.qrcode);
-        },
-
         hideQrcode = function () {
-            // console.log('hide');
             chrome.extension.sendMessage({ 'type': 'showContextMenus' });
             $('#uqrcode').fadeOut(100, function () {
                 $('#uqrcode').remove();
