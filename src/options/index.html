@@ -1,45 +1,57 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html dir="ltr" lang="zh-CN">
+<meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
 <head>
-<meta charset="UTF-8" />
-<title>全能二维码应用选项页</title>
-<link rel="stylesheet" type="text/css" href="style.css"/>
+    <meta charset="UTF-8"/>
+    <title>二维码在线编解码</title>
+    <link rel="shortcut" href="icon.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<div class="content clearfix">
-	<h1>全能二维码应用选项页</h1>
-	<div id="main">
-		<div class="row">
-			<h2>短网址转换</h2>
-			<p><input type="checkbox" checked id="tinyUrlEnabled"/><label for="tinyUrlEnabled">使用短网址</label></p>
-			<p>
-                <label for="tinyUrlType">短网址转换接口：</label>
-                <select name="tinyUrlType" id="tinyUrlType">
-                    <option value="baidu">百度</option>
-                    <option value="google">Google</option>
-                </select>
-            </p>
-		</div>
-		<div class="row">
-			<h2>二维码转换</h2>
-			<p>
-                <label for="qrCodeType">二维码生成接口：</label>
-                <select name="qrCodeType" id="qrCodeType">
-                    <option value="liantu">联图</option>
-                    <option value="kuaipai">快拍</option>
-                    <option value="google">Google</option>
-                </select>
-            </p>
-		</div>
-	</div>
-	<div id="intro">
-        <img src="intro.png" alt="功能介绍" width="190" height="190"/>
-        <p>扫一下，特色功能全知道！</p>
-	</div>
+<div id="header">
+    <div class="inner clearfix">
+        <div class="toggle">
+            <a class="encode" href="#encode">编码</a><a class="decode" href="#decode">解码</a>
+            <div class="navbg"></div>
+        </div>
+    </div>
 </div>
-<p id="feedback">如果您对本插件有什么意见或建议，欢迎您联系：<a href="mailto:admin@creatshare.com">admin@creatshare.com</a> 我们将尽最大努力去为您提供更好的服务！</p>
-<div class="info"></div>
-<script src="../jquery-2.0.0.min.js"></script>
+<div id="decode">
+    <div class="box">
+        <div class="panel preview">
+            <span class="close">&times;</span>
+            <canvas id="qrimg" width="300" height="300"></canvas>
+        </div>
+        <div class="panel upload">
+            <input type="text" id="src-input"/>
+            <p>拖拽，粘贴或者点击上传按钮</p>
+            <div class="upimg"><input type="file" id="src-file"/></div>
+        </div>
+        <div class="panel drop">
+            <p>拖拽图片到这里</p>
+        </div>
+    </div>
+    <div class="result">
+        <div class="hd"><h3>解析结果</h3><span>复制成功</span><button class="copy-result">复制结果</button></div>
+        <textarea id="result-text" readonly="true"></textarea>
+    </div>
+</div>
+<div id="encode">
+    <div id="input-area">
+        <textarea id="input-text"></textarea>
+        <div><button class="submit">提交编码</button></div>
+    </div>
+    <div class="resultbox">
+        <img src="" id="resultimg"/>
+        <div id="qrcanvas"></div>
+    </div>
+</div>
+<div id="mask"><div class="mbox"></div></div>
+<script src="../libs/jquery-2.0.0.min.js"></script>
+<script src="../libs/jquery.zclip.min.js"></script>
+<script src="../libs/qrbase.js"></script>
+<script src="../libs/encode.js"></script>
+<script src="../libs/decode.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
