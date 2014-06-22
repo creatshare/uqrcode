@@ -256,7 +256,8 @@
         }
     });
 
-    $('.toggle a').on('click', function () {
+    $('.toggle a').on('click', function (e) {
+        e.preventDefault();
         var $this = $(this);
         if ($this.hasClass('encode')) {
             $('.toggle').data('sec', 'encode');
