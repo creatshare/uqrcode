@@ -58,9 +58,6 @@ body {
     color: #207FCA;
     transition: .3s;
 }
-#header .toggle a.encode {
-    color: #FFF;
-}
 #header .toggle a.decode {
     left: 60px;
     padding-right: 10px;
@@ -70,22 +67,30 @@ body {
     width: 70px;
     height: 30px;
     top: 0;
-    left: 0;
     z-index: 1;
     border-radius: 15px;
     background: #207FCA;
     transition: .3s;
 }
-
-#header .toggle.sec a.encode {
-    color: #207FCA;
-}
-#header .toggle.sec a.decode {
+#header .toggle a.encode, #header .toggle.sec a.decode {
     color: #FFF;
 }
-#header .toggle.sec .navbg {
+#header .toggle a.decode, #header .toggle.sec a.encode {
+    color: #207FCA;
+}
+#header .toggle.encode-hover a.encode, #header .toggle.decode-hover a.decode {
+    color: #FFF;
+}
+#header .toggle.encode-hover a.decode, #header .toggle.decode-hover a.encode {
+    color: #207FCA;
+}
+#header .toggle.sec .navbg, #header .toggle.decode-hover .navbg {
     left: 60px;
 }
+#header .toggle .navbg, #header .toggle.encode-hover .navbg {
+    left: 0;
+}
+
 
 #qrdecode {
     display: none;

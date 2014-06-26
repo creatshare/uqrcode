@@ -96,32 +96,39 @@
         showResult = function (text) {
             $('#result-text').val(text);
             $('.result').show();
-            /* 复制结果 */
-            $('.result .copy-result').zclip({
-                path: '../libs/ZeroClipboard.swf',
-                copy: $('#result-text').val(),
-                afterCopy: function () {
-                    $('.result .hd span').css({'display': 'inline-blick'}).fadeIn(200, function () {
-                        var $this = $(this);
-                        setTimeout(function () {
-                            $this.fadeOut(200);
-                        }, 1000);
-                    });
-                }
-            });
+        },
+
+        closeResult = function () {
+            $('.box .panel').hide();
+            $('.box .upload').show();
+            $('#result-text').val('');
+            $('.result').hide();
+        },
+
+        togglePage = function (toggle) {
+            if (toggle) {
+                $('.toggle').data('sec', 'encode');
+                $('.toggle').removeClass('sec');
+                $('#qrencode').show();
+                $('#qrdecode').hide();
+                $('#header h1').html('二维码编码');
+                $('title').html('二维码编码');
+                isDecode = false;
+                closeResult();
+            } else {
+                $('.toggle').data('sec', 'decode');
+                $('.toggle').addClass('sec');
+                $('#qrdecode').show();
+                $('#qrencode').hide();
+                $('#header h1').html('二维码解码');
+                $('title').html('二维码解码');
+                isDecode = true;
+            }
         },
 
         init = function () {
             var hash = window.location.hash.substring(1);
-            if (hash !== 'decode') {
-                $('#qrencode').show();
-                $('#qrdecode').hide();
-                isDecode = false;
-            } else {
-                $('#qrdecode').show();
-                $('#qrencode').hide();
-                isDecode = true;
-            }
+            togglePage(hash !== 'decode');
         };
 
 
@@ -239,44 +246,18 @@
     });
 
     /* 关闭按钮 */
-    $('.box .preview .close').on('click', function () {
-        $('.box .panel').hide();
-        $('.box .upload').show();
-        $('#result-text').val('');
-        $('.result').hide();
-    });
+    $('.box .preview .close').on('click', closeResult);
 
     /* 切换按钮 Hover */
     $('.toggle a').hover(function () {
-        var $this = $(this),
-            $toggle = $('.toggle');
-        if ($toggle.hasClass('sec')) {
-            $toggle.data('sec', 'decode');
-        } else {
-            $toggle.data('sec', 'encode');
-        }
-        if ($this.hasClass('encode')) {
-            $('.toggle').removeClass('sec');
-        } else if ($this.hasClass('decode')) {
-            $('.toggle').addClass('sec');
-        }
+        $('.toggle').addClass($(this).attr('class') + '-hover');
     }, function () {
-        var $toggle = $('.toggle');
-        if ($toggle.data('sec') === 'decode') {
-            $('.toggle').addClass('sec');
-        } else if ($toggle.data('sec') === 'encode') {
-            $('.toggle').removeClass('sec');
-        }
+        $('.toggle').removeClass('decode-hover encode-hover');
     });
 
     /* 切换按钮点击 */
     $('.toggle a').on('click', function () {
-        var $this = $(this);
-        if ($this.hasClass('encode')) {
-            $('.toggle').data('sec', 'encode');
-        } else if ($this.hasClass('decode')) {
-            $('.toggle').data('sec', 'decode');
-        }
+        togglePage($(this).hasClass('encode'));
     });
 
     /* QRCode 编码 */
