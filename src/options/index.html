@@ -3,20 +3,20 @@
 <meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
 <head>
     <meta charset="UTF-8"/>
-    <title>二维码在线编解码</title>
-    <link rel="shortcut" href="icon.png" type="image/x-icon"/>
+    <title>二维码编解码</title>
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 <div id="header">
     <div class="inner clearfix">
+        <h1>二维码编解码</h1>
         <div class="toggle">
             <a class="encode" href="#encode">编码</a><a class="decode" href="#decode">解码</a>
             <div class="navbg"></div>
         </div>
     </div>
 </div>
-<div id="decode">
+<div id="qrdecode">
     <div class="box">
         <div class="panel preview">
             <span class="close">&times;</span>
@@ -25,18 +25,21 @@
         <div class="panel upload">
             <input type="text" id="src-input"/>
             <p>拖拽，粘贴或者点击上传按钮</p>
-            <div class="upimg"><input type="file" id="src-file"/></div>
+            <div class="upimg">
+                <label for="src-file"><span class="icon-upload"></span>上传文件</label>
+                <input type="file" id="src-file"/>
+            </div>
         </div>
         <div class="panel drop">
             <p>拖拽图片到这里</p>
         </div>
     </div>
     <div class="result">
-        <div class="hd"><h3>解析结果</h3><span>复制成功</span><button class="copy-result">复制结果</button></div>
+        <div class="hd"><h3>解析结果</h3></div>
         <textarea id="result-text" readonly="true"></textarea>
     </div>
 </div>
-<div id="encode">
+<div id="qrencode">
     <div id="input-area">
         <textarea id="input-text"></textarea>
         <div><button class="submit">提交编码</button></div>
@@ -48,7 +51,6 @@
 </div>
 <div id="mask"><div class="mbox"></div></div>
 <script src="../libs/jquery-2.0.0.min.js"></script>
-<script src="../libs/jquery.zclip.min.js"></script>
 <script src="../libs/qrbase.js"></script>
 <script src="../libs/encode.js"></script>
 <script src="../libs/decode.js"></script>

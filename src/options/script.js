@@ -2,114 +2,134 @@
     // 在 Canvas 绘制图片
     var inBox = false,
         isDecode = false,
-    showImg = function (url, callback) {
-        var img = new Image(),
-            canvas = $('#qrimg').get(0),
-            ctx = canvas.getContext('2d'),
-            canvasSize = 300;
+        showImg = function (url, callback) {
+            var img = new Image(),
+                canvas = $('#qrimg').get(0),
+                ctx = canvas.getContext('2d'),
+                canvasSize = 300;
 
-        if (!url) {
-            return;
-        }
-        img.onload = function () {
-            var imgSize, zoom,
-                imgW = img.width, imgH = img.height,
-                pos = {
-                    x: 0,
-                    y: 0
+            if (!url) {
+                return;
+            }
+            img.onload = function () {
+                var imgSize, zoom,
+                    imgW = img.width, imgH = img.height,
+                    pos = {
+                        x: 0,
+                        y: 0
+                    };
+
+                ctx.fillStyle = 'rgb(255, 255, 255)';
+                ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+                imgSize = Math.max(imgW, imgH);
+
+                if (imgSize > canvasSize) {
+                    zoom = canvasSize / imgSize;
+                    imgW = imgW * zoom;
+                    imgH = imgH * zoom;
+                }
+                pos.x = Math.floor((canvasSize - imgW) / 2);
+                pos.y = Math.floor((canvasSize - imgH) / 2);
+                ctx.drawImage(img, pos.x, pos.y, imgW, imgH);
+
+                if ($.isFunction(callback)) {
+                    callback();
+                }
+            };
+            img.src = url;
+        },
+
+        getFromClipboard = function (clipboard, callback) {
+            var i = 0,
+                items, item, types,
+                reader = new FileReader();
+
+            if (!clipboard || !clipboard.items) {
+                return;
+            }
+
+            items = clipboard.items;
+
+            item = items[0];
+            types = clipboard.types || [];
+
+            for (; i < types.length; i++) {
+                if (types[i] === 'Files') {
+                    item = items[i];
+                    break;
+                }
+            }
+
+            if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
+                reader.onload = function (e) {
+                    if ($.isFunction(callback)) {
+                        callback(e.target.result);
+                    }
                 };
 
-            ctx.fillStyle = 'rgb(255, 255, 255)';
-            ctx.fillRect(0, 0, canvasSize, canvasSize);
-
-            imgSize = Math.max(imgW, imgH);
-
-            if (imgSize > canvasSize) {
-                zoom = canvasSize / imgSize;
-                imgW = imgW * zoom;
-                imgH = imgH * zoom;
+                reader.readAsDataURL(item.getAsFile());
             }
-            pos.x = Math.floor((canvasSize - imgW) / 2);
-            pos.y = Math.floor((canvasSize - imgH) / 2);
-            ctx.drawImage(img, pos.x, pos.y, imgW, imgH);
+        },
 
-            if ($.isFunction(callback)) {
-                callback();
+        getFromDropbox = function (files, callback) {
+            var i = 0,
+                file,
+                reader = new FileReader();
+
+            for (; i < files.length; i++) {
+                file = files[i];
+                if (file.type.match(/^image\//i)) {
+                    break;
+                }
             }
-        };
-        img.src = url;
-    },
 
-    getFromClipboard = function (clipboard, callback) {
-        var i = 0,
-            items, item, types,
-            reader = new FileReader();
-
-        if (!clipboard || !clipboard.items) {
-            return;
-        }
-
-        items = clipboard.items;
-
-        item = items[0];
-        types = clipboard.types || [];
-
-        for (; i < types.length; i++) {
-            if (types[i] === 'Files') {
-                item = items[i];
-                break;
-            }
-        }
-
-        if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
             reader.onload = function (e) {
                 if ($.isFunction(callback)) {
                     callback(e.target.result);
                 }
             };
 
-            reader.readAsDataURL(item.getAsFile());
-        }
-    },
+            reader.readAsDataURL(file);
+        },
 
-    getFromDropbox = function (files, callback) {
-        var i = 0,
-            file,
-            reader = new FileReader();
+        showResult = function (text) {
+            $('#result-text').val(text);
+            $('.result').show();
+        },
 
-        for (; i < files.length; i++) {
-            file = files[i];
-            if (file.type.match(/^image\//i)) {
-                break;
+        closeResult = function () {
+            $('.box .panel').hide();
+            $('.box .upload').show();
+            $('#result-text').val('');
+            $('.result').hide();
+        },
+
+        togglePage = function (toggle) {
+            if (toggle) {
+                $('.toggle').data('sec', 'encode');
+                $('.toggle').removeClass('sec');
+                $('#qrencode').show();
+                $('#qrdecode').hide();
+                $('#header h1').html('二维码编码');
+                $('title').html('二维码编码');
+                isDecode = false;
+                closeResult();
+            } else {
+                $('.toggle').data('sec', 'decode');
+                $('.toggle').addClass('sec');
+                $('#qrdecode').show();
+                $('#qrencode').hide();
+                $('#header h1').html('二维码解码');
+                $('title').html('二维码解码');
+                isDecode = true;
             }
-        }
+        },
 
-        reader.onload = function (e) {
-            if ($.isFunction(callback)) {
-                callback(e.target.result);
-            }
+        init = function () {
+            var hash = window.location.hash.substring(1);
+            togglePage(hash !== 'decode');
         };
-
-        reader.readAsDataURL(file);
-    },
-
-    showResult = function (text) {
-        $('#result-text').val(text);
-        $('.result').show();
-        /* 复制结果 */
-        $('.result .copy-result').zclip({
-            path: '../libs/ZeroClipboard.swf',
-            copy: $('#result-text').val(),
-            afterCopy: function () {
-                $('.result .hd span').css({'display': 'inline-blick'}).fadeIn(200, function () {
-                    var $this = $(this);
-                    setTimeout(function () {
-                        $this.fadeOut(200);
-                    }, 1000);
-                });
-            }
-        });
-    };
 
 
     // 直接粘贴图片
@@ -226,50 +246,18 @@
     });
 
     /* 关闭按钮 */
-    $('.box .preview .close').on('click', function () {
-        $('.box .panel').hide();
-        $('.box .upload').show();
-        $('#result-text').val('');
-        $('.result').hide();
-    });
+    $('.box .preview .close').on('click', closeResult);
 
-    /* 切换按钮 */
+    /* 切换按钮 Hover */
     $('.toggle a').hover(function () {
-        var $this = $(this),
-            $toggle = $('.toggle');
-        if ($toggle.hasClass('sec')) {
-            $toggle.data('sec', 'decode');
-        } else {
-            $toggle.data('sec', 'encode');
-        }
-        if ($this.hasClass('encode')) {
-            $('.toggle').removeClass('sec');
-        } else if ($this.hasClass('decode')) {
-            $('.toggle').addClass('sec');
-        }
+        $('.toggle').addClass($(this).attr('class') + '-hover');
     }, function () {
-        var $toggle = $('.toggle');
-        if ($toggle.data('sec') === 'decode') {
-            $('.toggle').addClass('sec');
-        } else if ($toggle.data('sec') === 'encode') {
-            $('.toggle').removeClass('sec');
-        }
+        $('.toggle').removeClass('decode-hover encode-hover');
     });
 
-    $('.toggle a').on('click', function (e) {
-        e.preventDefault();
-        var $this = $(this);
-        if ($this.hasClass('encode')) {
-            $('.toggle').data('sec', 'encode');
-            $('#encode').show();
-            $('#decode').hide();
-            isDecode = false;
-        } else if ($this.hasClass('decode')) {
-            $('.toggle').data('sec', 'decode');
-            $('#decode').show();
-            $('#encode').hide();
-            isDecode = true;
-        }
+    /* 切换按钮点击 */
+    $('.toggle a').on('click', function () {
+        togglePage($(this).hasClass('encode'));
     });
 
     /* QRCode 编码 */
@@ -291,4 +279,7 @@
             $('.resultbox').show();
         }, 10);
     });
+
+    window.addEventListener("hashchange", init, false);
+    init();
 }(jQuery, window));
