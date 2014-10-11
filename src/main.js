@@ -13,7 +13,7 @@ var encode4Html = function (s) {
 
     // 检查网址是否合法
     cleckUrl = function (url) {
-        var regExp = /^http:\/\/([\w-]+\.)+[\w-]+\/.*$/;
+        var regExp = /^http(s)?:\/\/([\w-]+\.)+[\w-]+\/.*$/;
         if (url.match(regExp)) {
             return true;
         } else {
@@ -26,7 +26,7 @@ var encode4Html = function (s) {
         var typeList = [
             {
                 'type': 'link',
-                'regExp': /^http:\/\/([\w-]+\.)+[\w-]+\/.*$/,
+                'regExp': /^http(s)?:\/\/([\w-]+\.)+[\w-]+\/.*$/,
                 'tmpl': '<a href="{$text}" target="_blank">{$text}</a>',
             },
             {
