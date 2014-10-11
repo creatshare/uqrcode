@@ -42,11 +42,11 @@ var encode4Html = function (s) {
                 return type.tmpl.replace(/\{\$text\}/ig, encode4Html(text));
             }
         }
+        return encode4Html(text);
     },
 
     // 生成二维码
     creatQrcode = function (argu, callback) {
-        // console.log( "Data =====", val );
         var data = {},
             qrcanvas = $('<div>');
 
