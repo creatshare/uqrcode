@@ -6,7 +6,6 @@
     right: 0;
     background: rgba(0, 0, 0, .4);
     z-index:99999999;
-    font-family: '微软雅黑';
 }
 
 #uqrcode .uqrcode-border {
@@ -38,9 +37,6 @@
     height: 100%;
     background: #FFF;
 }
-#uqrcode .uqrcode-content.uqrcode-success:hover .uqrcode-qrcode {
-    -webkit-filter: blur(3px);
-}
 #uqrcode .uqrcode-content .uqrcode-qrcode img {
     position: absolute;
     margin: auto;
@@ -56,7 +52,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(200, 200, 200, .4);
+    background: #EEE;
     -webkit-transition: all .3s;
 }
 
@@ -64,21 +60,18 @@
     z-index: 3;
     top: 0;
 }
-#uqrcode .uqrcode-content .uqrcode-text .uqrcode-tips {
-    margin: 20px 0;
-    line-height: 30px;
-    text-align: center;
-    color: #F33;
-    font-size: 14px;
-}
 #uqrcode .uqrcode-content .uqrcode-text p {
     color: #222;
     padding: 20px;
-    border-top: 1px dashed #AAA;
-    background-color: rgba(255, 255, 255, .8);
     font-size: 14px;
     line-height: 28px;
-    min-height: 160px;
     text-align: left;
     word-break: break-all;
+}
+#uqrcode .uqrcode-content .uqrcode-text p a {
+    color: #36F;
+}
+#uqrcode .uqrcode-content .uqrcode-text p a:hover {
+    color: #36F;
+    text-decoration: underline;
 }

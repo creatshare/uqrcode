@@ -1,13 +1,46 @@
 /* global chrome */
-var menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0},
+// 字符编码 From QWrap
+var encode4Html = function (s) {
+        var el = document.createElement('pre'),
+            text = document.createTextNode(s);
+        el.appendChild(text);
+        return el.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    },
+
+    menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0},
+
+    dpr = window.devicePixelRatio || 1,
 
     // 检查网址是否合法
     cleckUrl = function (url) {
-        var regExp = /^http/;
+        var regExp = /^http:\/\/([\w-]+\.)+[\w-]+\/.*$/;
         if (url.match(regExp)) {
             return true;
         } else {
             return false;
+        }
+    },
+
+    // 文本类型识别
+    typeIdentify = function (text) {
+        var typeList = [
+            {
+                'type': 'link',
+                'regExp': /^http:\/\/([\w-]+\.)+[\w-]+\/.*$/,
+                'tmpl': '<a href="{$text}" target="_blank">{$text}</a>',
+            },
+            {
+                'type': 'mail',
+                'regExp': /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+                'tmpl': '<a href="mailto:{$text}" target="_blank">{$text}</a>',
+            }
+        ], i, type;
+
+        for (i = 0; i < typeList.length; i++) {
+            type = typeList[i];
+            if (type.regExp.test(text)) {
+                return type.tmpl.replace(/\{\$text\}/ig, encode4Html(text));
+            }
         }
     },
 
@@ -18,17 +51,17 @@ var menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0},
             qrcanvas = $('<div>');
 
         data.type = argu.type;
-        data.text = argu.text;
 
-        qrcanvas.qrcode({text: data.text});
+        qrcanvas.qrcode({text: argu.text, moduleSize: 5 * dpr});
         setTimeout(function () {
             var canvas = qrcanvas.find('canvas')[0];
             data.qrcode = canvas.toDataURL("image/png");
-            data.size = (canvas.width + canvas.height) / 2;
+            data.size = (canvas.width + canvas.height) / 2 / dpr;
+            data.text = typeIdentify(argu.text);
 
             if (!cleckUrl(argu.url)) {
                 data.type = 'info';
-                data.title = '<span class="error">错误：不是有效的网址</span>';
+                data.text = '<span class="error">错误：不是有效的网址</span>';
             }
 
             callback(data);
@@ -43,14 +76,13 @@ var menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0},
             ctx = qrcanvas[0].getContext('2d');
 
         img.src = argu.src;
-        img.onload = function() {
+        img.onload = function () {
             qrcanvas[0].width = img.width;
             qrcanvas[0].height = img.height;
             ctx.drawImage(img, 0, 0);
             data.type = 'info';
-            data.title = "二维码解码结果"
-            data.qrcode = chrome.extension.getURL("images/qr.png");
-            data.text = qrcanvas.qrdecode();
+            data.qrcode = '';
+            data.text = typeIdentify(qrcanvas.qrdecode());
             callback(data);
         };
     },
@@ -62,7 +94,6 @@ var menuId = {'image': 0, 'text': 0, 'link': 0, 'qrcode': 0},
                 title: "转化\"%s\"为二维码",
                 contexts: ['selection'],
                 onclick: function (info, tab) {
-                    // console.log("showpage ");
                     creatQrcode({"type": 'text', "url": tab.url, "text": info.selectionText}, function (data) {
                         chrome.tabs.sendMessage(tab.id, data);
                     });
